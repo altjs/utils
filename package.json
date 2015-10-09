@@ -1,0 +1,34 @@
+{
+  "name": "alt-utils",
+  "version": "1.0.0",
+  "description": "A collection of utils that work with alt.js",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run clean && npm run transpile",
+    "clean": "rimraf lib",
+    "coverage": "npm run transpile-cover && istanbul cover node_modules/mocha/bin/_mocha -- -u exports -R tap --require ./test/babel test",
+    "lint": "eslint src components",
+    "pretest": "npm run clean && npm run transpile",
+    "test": "mocha -u exports -R nyan --require ./test/babel test",
+    "transpile": "babel src --out-dir lib --stage 0",
+    "transpile-cover": "babel src --out-dir lib -r --stage 0"
+  },
+  "author": "Josh Perez <josh@goatslacker.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "alt": "0.17.4",
+    "babel": "5.8.23",
+    "babel-core": "5.8.25",
+    "chai": "3.3.0",
+    "immutable": "3.7.5",
+    "iso": "4.2.0",
+    "istanbul": "0.3.22",
+    "jsdom": "6.5.1",
+    "mocha": "2.3.3",
+    "react": "0.14.0",
+    "react-addons-test-utils": "0.14.0",
+    "react-dom": "0.14.0",
+    "rimraf": "2.4.3",
+    "sinon": "1.17.1"
+  }
+}
