@@ -257,6 +257,33 @@ export default {
       assert(componentDidConnect === true)
     },
 
+    'afterSetState hook is called '() {
+      let afterSetState = false
+      class ClassComponent4 extends React.Component {
+        render() {
+          return <span foo={this.props.foo} />
+        }
+      }
+      const WrappedComponent = connectToStores({
+        getStores() {
+          return [testStore]
+        },
+        getPropsFromStores(props) {
+          return testStore.getState()
+        },
+        afterSetState() {
+          afterSetState = true
+        }
+      }, ClassComponent4)
+      const node = TestUtils.renderIntoDocument(
+        <WrappedComponent />
+      )
+
+      testActions.updateFoo('Baz')
+
+      assert(afterSetState === true, 'afterSetState() hook not called')
+    },
+
     'Component receives all updates'(done) {
       let componentDidConnect = false
       class ClassComponent3 extends React.Component {

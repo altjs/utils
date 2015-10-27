@@ -15,6 +15,9 @@
  *        },
  *        getPropsFromStores(props) {
  *          return myStore.getState()
+ *        },
+ *        afterSetState(props) {
+ *          // Optional: do something after the state has been set
  *        }
  *      },
  *      render() {
@@ -55,6 +58,14 @@ function connectToStores(Spec, Component = Spec) {
     throw new Error('connectToStores() expects the wrapped component to have a static getPropsFromStores() method')
   }
 
+  if (typeof Spec.afterSetState === 'undefined'){
+    var afterSetState = (...args) => {} // no-op
+  } else if (!isFunction(Spec.afterSetState)) {
+    throw new Error('connectToStores() expects the afterSetState() to be a function')
+  } else {
+    var afterSetState = Spec.afterSetState
+  }
+
   const StoreConnection = React.createClass({
     displayName: `Stateful${Component.displayName || Component.name || 'Container'}`,
 
@@ -82,6 +93,7 @@ function connectToStores(Spec, Component = Spec) {
 
     onChange() {
       this.setState(Spec.getPropsFromStores(this.props, this.context))
+      afterSetState(this.props, this.context)
     },
 
     render() {
