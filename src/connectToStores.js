@@ -16,7 +16,7 @@
  *        getPropsFromStores(props) {
  *          return myStore.getState()
  *        },
- *        afterSetState(props) {
+ *        storeDidChange(props) {
  *          // Optional: do something after the state has been set
  *        }
  *      },
@@ -58,12 +58,12 @@ function connectToStores(Spec, Component = Spec) {
     throw new Error('connectToStores() expects the wrapped component to have a static getPropsFromStores() method')
   }
 
-  if (typeof Spec.afterSetState === 'undefined'){
-    var afterSetState = (...args) => {} // no-op
-  } else if (!isFunction(Spec.afterSetState)) {
-    throw new Error('connectToStores() expects the afterSetState() to be a function')
+  if (typeof Spec.storeDidChange === 'undefined'){
+    var storeDidChange = (...args) => {} // no-op
+  } else if (!isFunction(Spec.storeDidChange)) {
+    throw new Error('connectToStores() expects the storeDidChange() to be a function')
   } else {
-    var afterSetState = Spec.afterSetState
+    var storeDidChange = Spec.storeDidChange
   }
 
   const StoreConnection = React.createClass({
@@ -93,7 +93,7 @@ function connectToStores(Spec, Component = Spec) {
 
     onChange() {
       this.setState(Spec.getPropsFromStores(this.props, this.context))
-      afterSetState(this.props, this.context)
+      storeDidChange(this.props, this.context)
     },
 
     render() {

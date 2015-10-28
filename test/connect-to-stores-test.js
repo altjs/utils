@@ -257,8 +257,8 @@ export default {
       assert(componentDidConnect === true)
     },
 
-    'afterSetState hook is called '() {
-      let afterSetState = false
+    'storeDidChange hook is called '() {
+      let storeDidChange = false
       class ClassComponent4 extends React.Component {
         render() {
           return <span foo={this.props.foo} />
@@ -271,8 +271,8 @@ export default {
         getPropsFromStores(props) {
           return testStore.getState()
         },
-        afterSetState() {
-          afterSetState = true
+        storeDidChange() {
+          storeDidChange = true
         }
       }, ClassComponent4)
       const node = TestUtils.renderIntoDocument(
@@ -281,7 +281,7 @@ export default {
 
       testActions.updateFoo('Baz')
 
-      assert(afterSetState === true, 'afterSetState() hook not called')
+      assert(storeDidChange === true, 'storeDidChange() hook not called')
     },
 
     'Component receives all updates'(done) {
