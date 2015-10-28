@@ -258,7 +258,8 @@ export default {
     },
 
     'storeDidChange hook is called '() {
-      let storeDidChange = false
+      let storeDidChange
+
       class ClassComponent4 extends React.Component {
         render() {
           return <span foo={this.props.foo} />
@@ -271,8 +272,8 @@ export default {
         getPropsFromStores(props) {
           return testStore.getState()
         },
-        storeDidChange() {
-          storeDidChange = true
+        storeDidChange(state) {
+          storeDidChange = state
         }
       }, ClassComponent4)
       const node = TestUtils.renderIntoDocument(
@@ -281,7 +282,7 @@ export default {
 
       testActions.updateFoo('Baz')
 
-      assert(storeDidChange === true, 'storeDidChange() hook not called')
+      assert.deepEqual(storeDidChange, {foo: 'Baz'})
     },
 
     'Component receives all updates'(done) {

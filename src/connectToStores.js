@@ -93,7 +93,7 @@ function connectToStores(Spec, Component = Spec) {
 
     onChange() {
       this.setState(Spec.getPropsFromStores(this.props, this.context))
-      storeDidChange(this.props, this.context)
+      storeDidChange(this.state)
     },
 
     render() {
