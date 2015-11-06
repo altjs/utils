@@ -257,6 +257,34 @@ export default {
       assert(componentDidConnect === true)
     },
 
+    'storeDidChange hook is called '() {
+      let storeDidChange
+
+      class ClassComponent4 extends React.Component {
+        render() {
+          return <span foo={this.props.foo} />
+        }
+      }
+      const WrappedComponent = connectToStores({
+        getStores() {
+          return [testStore]
+        },
+        getPropsFromStores(props) {
+          return testStore.getState()
+        },
+        storeDidChange(state) {
+          storeDidChange = state
+        }
+      }, ClassComponent4)
+      const node = TestUtils.renderIntoDocument(
+        <WrappedComponent />
+      )
+
+      testActions.updateFoo('Baz')
+
+      assert.deepEqual(storeDidChange, {foo: 'Baz'})
+    },
+
     'Component receives all updates'(done) {
       let componentDidConnect = false
       class ClassComponent3 extends React.Component {
