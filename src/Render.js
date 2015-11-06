@@ -74,6 +74,8 @@ class DispatchBuffer {
     return Promise.all(this.promisesBuffer).then((data) => {
       // fire off all the actions synchronously
       data.forEach((f) => {
+        if (!f) return;
+        
         if (Array.isArray(f)) {
           f.forEach(x => x())
         } else {
