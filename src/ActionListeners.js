@@ -17,6 +17,8 @@
  * ```
  */
 
+import { isFunction } from './functions';
+
 function ActionListeners(alt) {
   this.dispatcher = alt.dispatcher
   this.listeners = {}
@@ -27,6 +29,10 @@ function ActionListeners(alt) {
  * Adds a listener to a specified action and returns the dispatch token.
  */
 ActionListeners.prototype.addActionListener = function addActionListener(symAction, handler) {
+  if (!isFunction(handler)) {
+    throw new Error('addActionListener() expects a function as the second argument')
+  }
+
   const id = this.dispatcher.register((payload) => {
     /* istanbul ignore else */
     if (symAction === payload.action) {
