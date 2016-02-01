@@ -12,7 +12,7 @@ Getting started is simple, you'll require the utility and pass your pre-wrapped 
 
 ```js
 var alt = new Alt();
-var immutable = require('alt/utils/ImmutableUtil');
+var immutable = require('alt-utils/lib/ImmutableUtil'); // or import immutable from 'alt-utils/lib/ImmutableUtil';
 ```
 
 If you're using babel with ES7 Stage 1 [decorator](https://github.com/wycats/javascript-decorators) support then this is sweet.
