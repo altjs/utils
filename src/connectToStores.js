@@ -107,6 +107,10 @@ function connectToStores(Spec, Component = Spec) {
     StoreConnection.contextTypes = Component.contextTypes
   }
 
+  if (Spec.connectorPropTypes) {
+    StoreConnection.propTypes = Spec.connectorPropTypes
+  }
+
   return StoreConnection
 }
 
