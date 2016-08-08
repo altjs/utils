@@ -107,6 +107,13 @@ function connectToStores(Spec, Component = Spec) {
     StoreConnection.contextTypes = Component.contextTypes
   }
 
+  Object.getOwnPropertyNames(Spec).forEach(function (prop) {
+    if (prop === 'getPropsFromStores' || prop === 'getStores') return
+    if (isFunction(Spec[prop]) && !StoreConnection[prop]) {
+      StoreConnection[prop] = Spec[prop]
+    }
+  })
+
   return StoreConnection
 }
 
