@@ -91,6 +91,38 @@ export default {
       assert.throws(() => connectToStores(BadComponentOne), 'expects the wrapped component to have a static getStores() method')
     },
 
+    'static methods on wrapped component are copied to StoreConnection component'() {
+
+      let outsideFunction = sinon.spy();
+
+      const ComponentWithStatics = React.createClass({
+        statics: {
+          getStores() {
+            return [testStore]
+          },
+          getPropsFromStores(props) {
+            return testStore.getState()
+          },
+          foo() {
+            outsideFunction()
+          }
+        },
+        render() {
+          return React.createElement('div', null, 'statics')
+        }
+      })
+
+      const wrappedComponent = connectToStores(ComponentWithStatics)
+
+
+      assert.isFunction(wrappedComponent.foo, 'expects foo to also be a function on the wrapped component')
+      assert.isNotFunction(wrappedComponent.getPropsFromStores, 'expects getPropsFromStores to not be copied')
+      assert.isNotFunction(wrappedComponent.getStores, 'expects getStores to not be copied')
+
+      wrappedComponent.foo()
+      assert.strictEqual(outsideFunction.called, true, 'expects the function outside to have been called')
+    },
+
     'element mounts and unmounts'() {
       const div = document.createElement('div')
 
