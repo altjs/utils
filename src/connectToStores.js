@@ -47,6 +47,7 @@
  */
 
 import React from 'react'
+import hoistNonReactStatic from 'hoist-non-react-statics'
 import { assign, isFunction } from './functions'
 
 function connectToStores(Spec, Component = Spec) {
@@ -107,12 +108,11 @@ function connectToStores(Spec, Component = Spec) {
     StoreConnection.contextTypes = Component.contextTypes
   }
 
-  Object.getOwnPropertyNames(Spec).forEach(function (prop) {
-    if (prop === 'getPropsFromStores' || prop === 'getStores') return
-    if (isFunction(Spec[prop]) && !StoreConnection[prop]) {
-      StoreConnection[prop] = Spec[prop]
-    }
+  hoistNonReactStatic(StoreConnection, Spec, {
+    getStores: true,
+    getPropsFromStores: true
   })
+
 
   return StoreConnection
 }

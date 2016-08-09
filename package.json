@@ -30,5 +30,8 @@
     "react-dom": "0.14.0",
     "rimraf": "2.4.3",
     "sinon": "1.17.1"
+  },
+  "dependencies": {
+    "hoist-non-react-statics": "^1.2.0"
   }
 }

@@ -120,7 +120,7 @@ export default {
       assert.isNotFunction(wrappedComponent.getStores, 'expects getStores to not be copied')
 
       wrappedComponent.foo()
-      assert.strictEqual(outsideFunction.called, true, 'expects the funtion outside to have been called')
+      assert.strictEqual(outsideFunction.called, true, 'expects the function outside to have been called')
     },
 
     'element mounts and unmounts'() {
