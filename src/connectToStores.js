@@ -47,7 +47,7 @@
  */
 
 import React from 'react'
-import hoistNonReactStatic from 'hoist-non-react-statics'
+import statics from 'hoist-non-react-statics'
 import { assign, isFunction } from './functions'
 
 function connectToStores(Spec, Component = Spec) {
@@ -108,7 +108,7 @@ function connectToStores(Spec, Component = Spec) {
     StoreConnection.contextTypes = Component.contextTypes
   }
 
-  hoistNonReactStatic(StoreConnection, Spec, {
+  statics(StoreConnection, Spec, {
     getStores: true,
     getPropsFromStores: true
   })
