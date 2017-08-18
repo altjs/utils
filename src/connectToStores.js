@@ -47,6 +47,7 @@
  */
 
 import React from 'react'
+import createReactClass from 'create-react-class';
 import { assign, isFunction } from './functions'
 
 function connectToStores(Spec, Component = Spec) {
@@ -66,7 +67,7 @@ function connectToStores(Spec, Component = Spec) {
     var storeDidChange = Spec.storeDidChange
   }
 
-  const StoreConnection = React.createClass({
+  const StoreConnection = createReactClass({
     displayName: `Stateful${Component.displayName || Component.name || 'Container'}`,
 
     getInitialState() {
