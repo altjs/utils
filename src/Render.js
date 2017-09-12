@@ -1,14 +1,15 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 
 export function withData(fetch, MaybeComponent) {
   function bind(Component) {
     return React.createClass({
       contextTypes: {
-        buffer: React.PropTypes.object.isRequired,
+        buffer: PropTypes.object.isRequired,
       },
 
       childContextTypes: {
-        buffer: React.PropTypes.object.isRequired,
+        buffer: PropTypes.object.isRequired,
       },
 
       getChildContext() {
@@ -38,7 +39,7 @@ export function withData(fetch, MaybeComponent) {
 function usingDispatchBuffer(buffer, Component) {
   return React.createClass({
     childContextTypes: {
-      buffer: React.PropTypes.object.isRequired,
+      buffer: PropTypes.object.isRequired,
     },
 
     getChildContext() {
@@ -75,7 +76,7 @@ class DispatchBuffer {
       // fire off all the actions synchronously
       data.forEach((f) => {
         if (!f) return;
-        
+
         if (Array.isArray(f)) {
           f.forEach(x => x())
         } else {

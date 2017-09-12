@@ -1,10 +1,12 @@
 import React from 'react'
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 
 export default function withAltContext(flux) {
   return (Component) => {
     return React.createClass({
       childContextTypes: {
-        flux: React.PropTypes.object,
+        flux: PropTypes.object,
       },
 
       getChildContext() {

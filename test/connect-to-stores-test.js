@@ -1,6 +1,7 @@
 import { jsdom } from 'jsdom'
 import Alt from 'alt'
 import React from 'react'
+import PropTypes from 'prop-types';
 import ReactDom from 'react-dom'
 import ReactDomServer from 'react-dom/server'
 import connectToStores from '../src/connectToStores'
@@ -162,7 +163,7 @@ export default {
           }
         },
         contextTypes: {
-          store: React.PropTypes.object
+          store: PropTypes.object
         },
         render() {
           return <span>Foo: {this.props.foo}</span>
@@ -174,7 +175,7 @@ export default {
           return { store: testStore }
         },
         childContextTypes: {
-          store: React.PropTypes.object
+          store: PropTypes.object
         },
         render() {
           return <Child/>
