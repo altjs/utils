@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 
 export function withData(fetch, MaybeComponent) {
   function bind(Component) {
-    return React.createClass({
+    return createReactClass({
       contextTypes: {
         buffer: PropTypes.object.isRequired,
       },
@@ -37,7 +38,7 @@ export function withData(fetch, MaybeComponent) {
 }
 
 function usingDispatchBuffer(buffer, Component) {
-  return React.createClass({
+  return createReactClass({
     childContextTypes: {
       buffer: PropTypes.object.isRequired,
     },

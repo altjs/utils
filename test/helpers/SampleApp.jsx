@@ -1,4 +1,5 @@
 import React from 'react'
+import createReactClass from 'create-react-class';
 import IsomorphicRenderer from '../../utils/IsomorphicRenderer'
 import Alt from '../../dist/alt-with-runtime'
 
@@ -9,7 +10,7 @@ const FooStore = alt.createStore({
   state: { test: 'hello' }
 })
 
-const App = React.createClass({
+const App = createReactClass({
   getInitialState() {
     return FooStore.getState()
   },

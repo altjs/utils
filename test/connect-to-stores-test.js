@@ -2,6 +2,7 @@ import { jsdom } from 'jsdom'
 import Alt from 'alt'
 import React from 'react'
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import ReactDom from 'react-dom'
 import ReactDomServer from 'react-dom/server'
 import connectToStores from '../src/connectToStores'
@@ -47,7 +48,7 @@ export default {
 
       const getPropsFromStores = sinon.stub().returns(FooStore.getState())
 
-      const Child = connectToStores(React.createClass({
+      const Child = connectToStores(createReactClass({
         statics: {
           getStores(props) {
             return [FooStore]
@@ -60,7 +61,7 @@ export default {
         }
       }))
 
-      const Parent = React.createClass({
+      const Parent = createReactClass({
         getInitialState() {
           return { y: 0 }
         },
@@ -83,7 +84,7 @@ export default {
     },
 
     'missing the static getStores() method should throw'() {
-      const BadComponentOne = React.createClass({
+      const BadComponentOne = createReactClass({
         render() {
           return React.createElement('div', null, 'Bad')
         }
@@ -95,7 +96,7 @@ export default {
     'element mounts and unmounts'() {
       const div = document.createElement('div')
 
-      const LegacyComponent = connectToStores(React.createClass({
+      const LegacyComponent = connectToStores(createReactClass({
         statics: {
           getStores() {
             return [testStore]
@@ -117,7 +118,7 @@ export default {
     },
 
     'missing the static getPropsFromStores() method should throw'() {
-      const BadComponentTwo = React.createClass({
+      const BadComponentTwo = createReactClass({
         statics: {
           getStores() {
             return [testStore]
@@ -132,7 +133,7 @@ export default {
     },
 
     'createClass() component can get props from stores'() {
-      const LegacyComponent = React.createClass({
+      const LegacyComponent = createReactClass({
         statics: {
           getStores() {
             return [testStore]
@@ -153,7 +154,7 @@ export default {
     },
 
     'component statics can see context properties'() {
-      const Child = connectToStores(React.createClass({
+      const Child = connectToStores(createReactClass({
         statics: {
           getStores(props, context) {
             return [context.store]
@@ -170,7 +171,7 @@ export default {
         }
       }))
 
-      const ContextComponent = React.createClass({
+      const ContextComponent = createReactClass({
         getChildContext() {
           return { store: testStore }
         },
@@ -187,7 +188,7 @@ export default {
     },
 
     'component can get use stores from props'() {
-      const LegacyComponent = React.createClass({
+      const LegacyComponent = createReactClass({
         statics: {
           getStores(props) {
             return [props.store]

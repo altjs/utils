@@ -1,6 +1,7 @@
 import { jsdom } from 'jsdom'
 import Alt from 'alt'
 import React from 'react'
+import createReactClass from 'create-react-class';
 import AltContainer from 'alt/AltContainer'
 import withAltContext from '../src/withAltContext'
 import { assert } from 'chai'
@@ -137,7 +138,7 @@ export default {
     'children get flux as props with context'() {
       const flux = new Flux()
 
-      const TestComponent = React.createClass({
+      const TestComponent = createReactClass({
         render() {
           return (
             <AltContainer>
@@ -190,7 +191,7 @@ export default {
     'flux prop works with the transform function'() {
       const flux = new Flux()
 
-      const TestComponent = React.createClass({
+      const TestComponent = createReactClass({
         render() {
           return (
             <AltContainer transform={({ flux }) => { return { flx: flux } }}>
@@ -409,7 +410,7 @@ export default {
     'changing an already mounted components props'() {
       let cb = null
 
-      const El = React.createClass({
+      const El = createReactClass({
         getInitialState() {
           return { store: TestStore }
         },
@@ -519,7 +520,7 @@ export default {
     },
 
     'passing in a component as a prop'() {
-      const App = React.createClass({
+      const App = createReactClass({
         render() {
           return <strong x={this.props.x} />
         }
@@ -540,13 +541,13 @@ export default {
     'nested components and context'() {
       const flux = new Flux()
 
-      const View = React.createClass({
+      const View = createReactClass({
         render() {
           return <SubView />
         }
       })
 
-      const SubView = React.createClass({ render() {
+      const SubView = createReactClass({ render() {
         return (
           <AltContainer>
             <InsideComponent />
@@ -554,7 +555,7 @@ export default {
         )
       } })
 
-      const InsideComponent = React.createClass({
+      const InsideComponent = createReactClass({
         render() {
           return <span flux={this.props.flux} />
         }
@@ -562,7 +563,7 @@ export default {
 
       const foo = sinon.spy()
 
-      const App = React.createClass({
+      const App = createReactClass({
         render() {
           return (
             <AltContainer flux={flux} onMount={foo}>

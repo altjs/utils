@@ -23,11 +23,12 @@ export default connect({
 */
 
 import React from 'react'
+import createReactClass from 'create-react-class';
 import Render from './Render'
 
 function connect(Spec, MaybeComponent) {
   function bind(Component) {
-    return React.createClass({
+    return createReactClass({
       getInitialState() {
         return Spec.reduceProps(this.props, this.context)
       },
