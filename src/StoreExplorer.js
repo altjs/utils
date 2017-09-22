@@ -1,6 +1,7 @@
 import AltStore from './debug/AltStore'
 import DebugActions from './debug/DebugActions'
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types';
 import connectToStores from './connectToStores'
 
 class StoreExplorer extends React.Component {

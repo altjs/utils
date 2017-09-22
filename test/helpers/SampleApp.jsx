@@ -9,10 +9,11 @@ const FooStore = alt.createStore({
   state: { test: 'hello' }
 })
 
-const App = React.createClass({
-  getInitialState() {
-    return FooStore.getState()
-  },
+class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = FooStore.getState()
+  }
 
   render() {
     return (

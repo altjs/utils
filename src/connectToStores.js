@@ -66,16 +66,17 @@ function connectToStores(Spec, Component = Spec) {
     var storeDidChange = Spec.storeDidChange
   }
 
-  const StoreConnection = React.createClass({
-    displayName: `Stateful${Component.displayName || Component.name || 'Container'}`,
+  class StoreConnection extends React.Component {
+    constructor(props, context) {
+      super(props, context)
+      this.state = Spec.getPropsFromStores(props, context)
 
-    getInitialState() {
-      return Spec.getPropsFromStores(this.props, this.context)
-    },
+      this.onChange = this.onChange.bind(this)
+    }
 
     componentWillReceiveProps(nextProps) {
       this.setState(Spec.getPropsFromStores(nextProps, this.context))
-    },
+    }
 
     componentDidMount() {
       const stores = Spec.getStores(this.props, this.context)
@@ -85,24 +86,27 @@ function connectToStores(Spec, Component = Spec) {
       if (Spec.componentDidConnect) {
         Spec.componentDidConnect(this.props, this.context)
       }
-    },
+    }
 
     componentWillUnmount() {
       this.storeListeners.forEach(unlisten => unlisten())
-    },
+    }
 
     onChange() {
       this.setState(Spec.getPropsFromStores(this.props, this.context))
       storeDidChange(this.state)
-    },
+    }
 
     render() {
       return React.createElement(
         Component,
         assign({}, this.props, this.state)
       )
-    },
-  })
+    }
+  }
+
+  StoreConnection.displayName = `Stateful${Component.displayName || Component.name || 'Container'}`
+
   if (Component.contextTypes) {
     StoreConnection.contextTypes = Component.contextTypes
   }

@@ -1,19 +1,16 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 
 export function withData(fetch, MaybeComponent) {
   function bind(Component) {
-    return React.createClass({
-      contextTypes: {
-        buffer: React.PropTypes.object.isRequired,
-      },
-
-      childContextTypes: {
-        buffer: React.PropTypes.object.isRequired,
-      },
+    class WithDataClass extends React.Component {
+      constructor(props) {
+        super(props)
+      }
 
       getChildContext() {
         return { buffer: this.context.buffer }
-      },
+      }
 
       componentWillMount() {
         if (!this.context.buffer.locked) {
@@ -21,14 +18,24 @@ export function withData(fetch, MaybeComponent) {
             fetch(this.props)
           )
         }
-      },
+      }
 
       render() {
         return this.context.buffer.locked
           ? React.createElement(Component, this.props)
           : null
-      },
-    })
+      }
+    }
+
+    WithDataClass.contextTypes = {
+      buffer: PropTypes.object.isRequired,
+    }
+
+    WithDataClass.childContextTypes = {
+      buffer: PropTypes.object.isRequired,
+    }
+
+    return WithDataClass
   }
 
   // works as a decorator or as a function
@@ -36,19 +43,25 @@ export function withData(fetch, MaybeComponent) {
 }
 
 function usingDispatchBuffer(buffer, Component) {
-  return React.createClass({
-    childContextTypes: {
-      buffer: React.PropTypes.object.isRequired,
-    },
+  class DispatchBufferClass extends React.Component {
+    constructor(props) {
+      super(props)
+    }
 
     getChildContext() {
       return { buffer }
-    },
+    }
 
     render() {
       return React.createElement(Component, this.props)
-    },
-  })
+    }
+  }
+
+  DispatchBufferClass.childContextTypes = {
+    buffer: PropTypes.object.isRequired,
+  }
+
+  return DispatchBufferClass
 }
 
 class DispatchBuffer {
@@ -75,7 +88,7 @@ class DispatchBuffer {
       // fire off all the actions synchronously
       data.forEach((f) => {
         if (!f) return;
-        
+
         if (Array.isArray(f)) {
           f.forEach(x => x())
         } else {
