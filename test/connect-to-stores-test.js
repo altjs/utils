@@ -2,7 +2,6 @@ import { jsdom } from 'jsdom'
 import Alt from 'alt'
 import React from 'react'
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
 import ReactDom from 'react-dom'
 import ReactDomServer from 'react-dom/server'
 import connectToStores from '../src/connectToStores'
@@ -46,49 +45,53 @@ export default {
         this.x = 1
       }, 'FooStore')
 
-      const getPropsFromStores = sinon.stub().returns(FooStore.getState())
+      const getPropsFromStoresStub = sinon.stub().returns(FooStore.getState())
 
-      const Child = connectToStores(createReactClass({
-        statics: {
-          getStores(props) {
-            return [FooStore]
-          },
+      class ChildClass extends React.Component {
+        static getStores(props) {
+          return [FooStore]
+        }
 
-          getPropsFromStores
-        },
+        static getPropsFromStores = getPropsFromStoresStub
+
         render() {
           return <span>{this.props.x + this.props.y}</span>
         }
-      }))
+      }
 
-      const Parent = createReactClass({
-        getInitialState() {
-          return { y: 0 }
-        },
+      const Child = connectToStores(ChildClass)
+
+      class Parent extends React.Component {
+        constructor(props) {
+          super(props)
+          this.state = { y: 0 }
+        }
+
         componentDidMount() {
           this.setState({ y: 1 })
-        },
+        }
+
         render() {
           return <Child y={this.state.y} />
         }
-      })
+      }
 
       const node = TestUtils.renderIntoDocument(
         <Parent />
       )
 
-      assert(getPropsFromStores.callCount === 2, 'getPropsFromStores called twice')
+      assert(getPropsFromStoresStub.callCount === 2, 'getPropsFromStores called twice')
 
       const span = TestUtils.findRenderedDOMComponentWithTag(node, 'span')
       assert(span.innerHTML === '2', 'prop passed in is correct')
     },
 
     'missing the static getStores() method should throw'() {
-      const BadComponentOne = createReactClass({
+      class BadComponentOne extends React.Component {
         render() {
           return React.createElement('div', null, 'Bad')
         }
-      })
+      }
 
       assert.throws(() => connectToStores(BadComponentOne), 'expects the wrapped component to have a static getStores() method')
     },
@@ -96,19 +99,22 @@ export default {
     'element mounts and unmounts'() {
       const div = document.createElement('div')
 
-      const LegacyComponent = connectToStores(createReactClass({
-        statics: {
-          getStores() {
-            return [testStore]
-          },
-          getPropsFromStores(props) {
-            return testStore.getState()
-          }
-        },
+      class LegacyClass extends React.Component {
+        static getStores() {
+          return [testStore]
+        }
+
+        static getPropsFromStores(props) {
+          return testStore.getState()
+        }
+
         render() {
           return React.createElement('div', null, `Foo${this.props.delim}${this.props.foo}`)
         }
-      }))
+      }
+
+
+      const LegacyComponent = connectToStores(LegacyClass)
 
       ReactDom.render(
         <LegacyComponent />
@@ -118,34 +124,34 @@ export default {
     },
 
     'missing the static getPropsFromStores() method should throw'() {
-      const BadComponentTwo = createReactClass({
-        statics: {
-          getStores() {
-            return [testStore]
-          }
-        },
+      class BadComponentTwo extends React.Component {
+        static getStores() {
+          return [testStore]
+        }
+
         render() {
           return React.createElement('div', null, 'Bad')
         }
-      })
+      }
 
       assert.throws(() => connectToStores(BadComponentTwo), 'expects the wrapped component to have a static getPropsFromStores() method')
     },
 
-    'createClass() component can get props from stores'() {
-      const LegacyComponent = createReactClass({
-        statics: {
-          getStores() {
-            return [testStore]
-          },
-          getPropsFromStores(props) {
-            return testStore.getState()
-          }
-        },
+    'es6 Class component can get props from stores'() {
+      class LegacyComponent extends React.Component {
+        static getStores() {
+          return [testStore]
+        }
+
+        static getPropsFromStores(props) {
+          return testStore.getState()
+        }
+
         render() {
           return React.createElement('div', null, `Foo${this.props.delim}${this.props.foo}`)
         }
-      })
+      }
+
 
       const WrappedComponent = connectToStores(LegacyComponent)
       const element = React.createElement(WrappedComponent, {delim: ': '})
@@ -154,53 +160,60 @@ export default {
     },
 
     'component statics can see context properties'() {
-      const Child = connectToStores(createReactClass({
-        statics: {
-          getStores(props, context) {
-            return [context.store]
-          },
-          getPropsFromStores(props, context) {
-            return context.store.getState()
-          }
-        },
-        contextTypes: {
-          store: PropTypes.object
-        },
+
+      class ChildClass extends React.Component {
+        static getStores(props, context) {
+          return [context.store]
+        }
+
+        static getPropsFromStores(props, context) {
+          return context.store.getState()
+        }
+
         render() {
           return <span>Foo: {this.props.foo}</span>
         }
-      }))
+      }
 
-      const ContextComponent = createReactClass({
+      ChildClass.contextTypes = {
+        store: PropTypes.object
+      }
+
+      const Child = connectToStores(ChildClass)
+
+      class ContextComponent extends React.Component {
         getChildContext() {
           return { store: testStore }
-        },
-        childContextTypes: {
-          store: PropTypes.object
-        },
+        }
+
         render() {
           return <Child/>
         }
-      })
+      }
+
+      ContextComponent.childContextTypes = {
+        store: PropTypes.object
+      }
+
       const element = React.createElement(ContextComponent)
       const output = ReactDomServer.renderToStaticMarkup(element)
       assert.include(output, 'Foo: Bar')
     },
 
     'component can get use stores from props'() {
-      const LegacyComponent = createReactClass({
-        statics: {
-          getStores(props) {
-            return [props.store]
-          },
-          getPropsFromStores(props) {
-            return props.store.getState()
-          }
-        },
+      class LegacyComponent extends React.Component {
+        static getStores(props) {
+          return [props.store]
+        }
+
+        static getPropsFromStores(props) {
+          return props.store.getState()
+        }
+
         render() {
           return React.createElement('div', null, `Foo${this.props.delim}${this.props.foo}`)
         }
-      })
+      }
 
       const WrappedComponent = connectToStores(LegacyComponent)
       const element = React.createElement(WrappedComponent, {delim: ': ', store: testStore})

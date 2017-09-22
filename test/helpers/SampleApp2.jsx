@@ -1,11 +1,14 @@
 import React from 'react'
-import createReactClass from 'create-react-class';
 import IsomorphicRenderer from '../../utils/IsomorphicRenderer'
 import Alt from '../../dist/alt-with-runtime'
 
 const alt = new Alt()
 
-const App = createReactClass({
+class App extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
   render() {
     return (
       <div>chillin</div>

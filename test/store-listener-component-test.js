@@ -1,7 +1,6 @@
 import { jsdom } from 'jsdom'
 import Alt from 'alt'
 import React from 'react'
-import createReactClass from 'create-react-class';
 import AltContainer from 'alt/AltContainer'
 import withAltContext from '../src/withAltContext'
 import { assert } from 'chai'
@@ -138,7 +137,7 @@ export default {
     'children get flux as props with context'() {
       const flux = new Flux()
 
-      const TestComponent = createReactClass({
+      class TestComponent extends React.Component {
         render() {
           return (
             <AltContainer>
@@ -152,7 +151,7 @@ export default {
             </AltContainer>
           )
         }
-      })
+      }
 
       const WrappedComponent = withAltContext(flux)(TestComponent)
 
@@ -191,7 +190,7 @@ export default {
     'flux prop works with the transform function'() {
       const flux = new Flux()
 
-      const TestComponent = createReactClass({
+      class TestComponent extends React.Component {
         render() {
           return (
             <AltContainer transform={({ flux }) => { return { flx: flux } }}>
@@ -205,7 +204,7 @@ export default {
             </AltContainer>
           )
         }
-      })
+      }
 
       const WrappedComponent = withAltContext(flux)(TestComponent);
 
@@ -410,14 +409,15 @@ export default {
     'changing an already mounted components props'() {
       let cb = null
 
-      const El = createReactClass({
-        getInitialState() {
-          return { store: TestStore }
-        },
+      class El extends React.Component {
+        constructor(props) {
+          super(props)
+          this.state = { store: TestStore }
+        }
 
         componentDidMount() {
           cb = state => this.setState(state)
-        },
+        }
 
         render() {
           return (
@@ -426,7 +426,7 @@ export default {
             </AltContainer>
           )
         }
-      })
+      }
 
       const node = TestUtils.renderIntoDocument(<El />)
 
@@ -520,11 +520,11 @@ export default {
     },
 
     'passing in a component as a prop'() {
-      const App = createReactClass({
+      class App extends React.Component {
         render() {
           return <strong x={this.props.x} />
         }
-      })
+      }
 
       const node = TestUtils.renderIntoDocument(
         <AltContainer store={TestStore} component={App} />
@@ -541,29 +541,31 @@ export default {
     'nested components and context'() {
       const flux = new Flux()
 
-      const View = createReactClass({
+      class View extends React.Component {
         render() {
           return <SubView />
         }
-      })
+      }
 
-      const SubView = createReactClass({ render() {
-        return (
-          <AltContainer>
-            <InsideComponent />
-          </AltContainer>
-        )
-      } })
+      class SubView extends React.Component {
+        render() {
+          return (
+            <AltContainer>
+              <InsideComponent />
+            </AltContainer>
+          )
+        }
+      }
 
-      const InsideComponent = createReactClass({
+      class InsideComponent extends React.Component {
         render() {
           return <span flux={this.props.flux} />
         }
-      })
+      }
 
       const foo = sinon.spy()
 
-      const App = createReactClass({
+      class App extends React.Component {
         render() {
           return (
             <AltContainer flux={flux} onMount={foo}>
@@ -571,7 +573,7 @@ export default {
             </AltContainer>
           )
         }
-      })
+      }
 
       const node = TestUtils.renderIntoDocument(<App />)
       const span = TestUtils.findRenderedDOMComponentWithTag(node, 'span')
