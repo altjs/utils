@@ -23,19 +23,19 @@ export default connect({
 */
 
 import React from 'react'
-import createReactClass from 'create-react-class';
 import Render from './Render'
 
 function connect(Spec, MaybeComponent) {
   function bind(Component) {
-    return createReactClass({
-      getInitialState() {
-        return Spec.reduceProps(this.props, this.context)
-      },
+    return class ConnectComponent extends React.Component {
+      constructor(props, context) {
+        super(props, context)
+        this.state = Spec.reduceProps(props, context)
+      }
 
       componentWillMount() {
         if (Spec.willMount) Spec.willMount(this.props, this.context)
-      },
+      }
 
       componentDidMount() {
         const stores = Spec.listenTo(this.props, this.context)
@@ -44,20 +44,20 @@ function connect(Spec, MaybeComponent) {
         })
 
         if (Spec.didMount) Spec.didMount(this.props, this.context)
-      },
+      }
 
       componentWillUnmount() {
         this.storeListeners.forEach(unlisten => unlisten())
-      },
+      }
 
       onChange() {
         this.setState(Spec.reduceProps(this.props, this.context))
-      },
+      }
 
       render() {
         return <Component {...this.props} {...this.state} />
-      },
-    })
+      }
+    }
   }
 
   const createResolver = Spec.resolveAsync

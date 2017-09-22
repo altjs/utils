@@ -1,21 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
 
 export function withData(fetch, MaybeComponent) {
   function bind(Component) {
-    return createReactClass({
-      contextTypes: {
-        buffer: PropTypes.object.isRequired,
-      },
-
-      childContextTypes: {
-        buffer: PropTypes.object.isRequired,
-      },
+    class WithDataClass extends React.Component {
+      constructor(props) {
+        super(props)
+      }
 
       getChildContext() {
         return { buffer: this.context.buffer }
-      },
+      }
 
       componentWillMount() {
         if (!this.context.buffer.locked) {
@@ -23,14 +18,24 @@ export function withData(fetch, MaybeComponent) {
             fetch(this.props)
           )
         }
-      },
+      }
 
       render() {
         return this.context.buffer.locked
           ? React.createElement(Component, this.props)
           : null
-      },
-    })
+      }
+    }
+
+    WithDataClass.contextTypes = {
+      buffer: PropTypes.object.isRequired,
+    }
+
+    WithDataClass.childContextTypes = {
+      buffer: PropTypes.object.isRequired,
+    }
+
+    return WithDataClass
   }
 
   // works as a decorator or as a function
@@ -38,19 +43,25 @@ export function withData(fetch, MaybeComponent) {
 }
 
 function usingDispatchBuffer(buffer, Component) {
-  return createReactClass({
-    childContextTypes: {
-      buffer: PropTypes.object.isRequired,
-    },
+  class DispatchBufferClass extends React.Component {
+    constructor(props) {
+      super(props)
+    }
 
     getChildContext() {
       return { buffer }
-    },
+    }
 
     render() {
       return React.createElement(Component, this.props)
-    },
-  })
+    }
+  }
+
+  DispatchBufferClass.childContextTypes = {
+    buffer: PropTypes.object.isRequired,
+  }
+
+  return DispatchBufferClass
 }
 
 class DispatchBuffer {
