@@ -92,6 +92,10 @@ function connectToStores(Spec, Component = Spec) {
       this.storeListeners.forEach(unlisten => unlisten())
     }
 
+    getRef() {
+      return this.refs.component
+    },
+
     onChange() {
       this.setState(Spec.getPropsFromStores(this.props, this.context))
       storeDidChange(this.state)
@@ -100,7 +104,7 @@ function connectToStores(Spec, Component = Spec) {
     render() {
       return React.createElement(
         Component,
-        assign({}, this.props, this.state)
+        assign({ ref: 'component' }, this.props, this.state)
       )
     }
   }

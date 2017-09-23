@@ -300,6 +300,32 @@ export default {
       assert.deepEqual(storeDidChange, {foo: 'Baz'})
     },
 
+    'Component ref can be accessed from WrappedComponent'() {
+      class ClassComponent5 extends React.Component {
+        static getStores() {
+          return [testStore]
+        }
+        static getPropsFromStores(props) {
+          return testStore.getState()
+        }
+        isAccessible() {
+          return true
+        }
+        render() {
+          return <span foo={this.props.foo} />
+        }
+      }
+
+      const WrappedComponent = connectToStores(ClassComponent5)
+
+      let node = TestUtils.renderIntoDocument(
+        <WrappedComponent />
+      )
+
+      const child = node.getRef()
+      assert(child.isAccessible() === true)
+    },
+
     'Component receives all updates'(done) {
       let componentDidConnect = false
       class ClassComponent3 extends React.Component {
