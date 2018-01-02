@@ -22,15 +22,15 @@ const AltTestingUtils = {
     }
   },
 
-  makeStoreTestable(alt, UnwrappedStore) {
+  makeStoreTestable(alt, UnwrappedStore, ...constructorArgs) {
     const StorePrototype = AltTestingUtils.createStoreSpy(alt)
     class DerivedStore extends UnwrappedStore {
-      constructor() {
-        super()
+      constructor(...args) {
+        super(...args)
       }
     }
     assign(DerivedStore.prototype, StorePrototype)
-    return new DerivedStore()
+    return new DerivedStore(...constructorArgs)
   },
 
   mockGetState(state = {}) {
