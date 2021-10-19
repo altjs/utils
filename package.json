@@ -3,6 +3,10 @@
   "version": "2.0.0",
   "description": "A collection of utils that work with alt.js",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/altjs/utils.git"
+  },
   "scripts": {
     "build": "npm run clean && npm run transpile",
     "clean": "rimraf lib",
